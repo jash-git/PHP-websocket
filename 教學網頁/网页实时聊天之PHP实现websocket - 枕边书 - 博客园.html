@@ -1,0 +1,1806 @@
+<!DOCTYPE html>
+<!-- saved from url=(0050)https://www.cnblogs.com/zhenbianshu/p/6111257.html -->
+<html lang="zh-cn"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="origin">
+    <meta property="og:description" content="websocket 作为 HTML5 里一个新的特性一直很受人关注，因为它真的非常酷，打破了 http “请求-响应”的常规思维，实现了服务器向客户端主动推送消息，本文介绍如何使用 PHP 和 JS ">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>网页实时聊天之PHP实现websocket - 枕边书 - 博客园</title>
+    
+    <link rel="stylesheet" href="./网页实时聊天之PHP实现websocket - 枕边书 - 博客园_files/blog-common.min.css">
+    <link id="MainCss" rel="stylesheet" href="./网页实时聊天之PHP实现websocket - 枕边书 - 博客园_files/bundle-codinglife.min.css">
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="./网页实时聊天之PHP实现websocket - 枕边书 - 博客园_files/bundle-codinglife-mobile.min.css">
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/zhenbianshu/rss">
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/zhenbianshu/rsd.xml">
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/zhenbianshu/wlwmanifest.xml">
+    <script src="./网页实时聊天之PHP实现websocket - 枕边书 - 博客园_files/osd.js.下載"></script><script src="./网页实时聊天之PHP实现websocket - 枕边书 - 博客园_files/amp4ads-host-v0.js.下載"></script><script src="./网页实时聊天之PHP实现websocket - 枕边书 - 博客园_files/pubads_impl_rendering_2020013001.js.下載"></script><script async="" src="./网页实时聊天之PHP实现websocket - 枕边书 - 博客园_files/analytics.js.下載"></script><script src="./网页实时聊天之PHP实现websocket - 枕边书 - 博客园_files/jquery-2.2.0.min.js.下載"></script>
+    <script src="./网页实时聊天之PHP实现websocket - 枕边书 - 博客园_files/blog-common.min.js.下載"></script>
+    <script>
+        var currentBlogId = 247982;
+        var currentBlogApp = 'zhenbianshu';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+    </script>
+    
+    
+    
+<link rel="preload" href="./网页实时聊天之PHP实现websocket - 枕边书 - 博客园_files/f(2).txt" as="script"><script type="text/javascript" src="./网页实时聊天之PHP实现websocket - 枕边书 - 博客园_files/f(2).txt"></script><link rel="preload" href="./网页实时聊天之PHP实现websocket - 枕边书 - 博客园_files/f(3).txt" as="script"><script type="text/javascript" src="./网页实时聊天之PHP实现websocket - 枕边书 - 博客园_files/f(3).txt"></script><script src="./网页实时聊天之PHP实现websocket - 枕边书 - 博客园_files/pubads_impl_2020013001.js.下載" async=""></script><link rel="prefetch" href="https://tpc.googlesyndication.com/safeframe/1-0-37/html/container.html"></head>
+<body>
+    <a name="top"></a>
+    
+    
+<!--done-->
+<div id="home">
+<div id="header">
+	<div id="blogTitle">
+        <a id="lnkBlogLogo" href="https://www.cnblogs.com/zhenbianshu/"><img id="blogLogo" src="./网页实时聊天之PHP实现websocket - 枕边书 - 博客园_files/logo.gif" alt="返回主页"></a>		
+		
+<!--done-->
+<h1><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/zhenbianshu/">枕边书</a>
+</h1>
+<h2>
+常怀敬畏之心。
+</h2>
+
+
+
+
+		
+	</div><!--end: blogTitle 博客的标题和副标题 -->
+	<div id="navigator">
+		
+<ul id="navList">
+<li><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+<li>
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/zhenbianshu/">
+首页</a>
+</li>
+<li>
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+<li>
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/%E6%9E%95%E8%BE%B9%E4%B9%A6">
+联系</a></li>
+<li>
+
+<!--<partial name="./Shared/_XmlLink.cshtml" model="Model" /></li>--></li>
+<li>
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+
+		<div class="blogStats">
+			
+			<span id="stats_post_count">随笔 - 
+83&nbsp; </span>
+<span id="stats_article_count">文章 - 
+0&nbsp; </span>
+<span id="stats-comment_count">评论 - 
+427</span>
+
+			
+		</div><!--end: blogStats -->
+	</div><!--end: navigator 博客导航栏 -->
+</div><!--end: header 头部 -->
+
+<div id="main">
+	<div id="mainContent">
+	<div class="forFlow">
+		<div id="post_detail">
+    <!--done-->
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/zhenbianshu/p/6111257.html">网页实时聊天之PHP实现websocket</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <style><!--
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+  padding: 20px;
+}
+
+#blog-calendar{
+  display:none !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+--></style>
+<p><span style="color: #000000; font-size: 28px; font-weight: bold;">前言</span></p>
+<p>websocket 作为 HTML5 里一个新的特性一直很受人关注，因为它真的非常酷，打破了 http “请求-响应”的常规思维，实现了服务器向客户端主动推送消息，本文介绍如何使用 PHP 和 JS 应用 websocket 实现一个网页实时聊天室；</p>
+<p>以前写过一篇文章讲述如何使用ajax长轮询实现网页实时聊天，见链接： <a href="http://www.cnblogs.com/zhenbianshu/p/4964095.html">网页实时聊天之js和jQuery实现ajax长轮询</a> ，但是轮询和服务器的 pending 都是无谓的消耗，websocket 才是新的趋势。</p>
+<p>最近艰难地“挤”出了一点时间，完善了很早之前做的 websocket “请求-原样返回”服务器，用js完善了下客户端功能，把过程和思路分享给大家，顺便也普及一下 websocket 相关的知识，当然现在讨论 websocket 的文章也特别多，有些理论性的东西我也就略过了，给出参考文章供大家选择阅读。</p>
+<p>正文开始前，先贴一张聊天室的效果图（请不要在意CSS渣的页面）：</p>
+<p><img src="./网页实时聊天之PHP实现websocket - 枕边书 - 博客园_files/819496-20161128203834677-823596906.png" alt=""></p>
+<p>然后当然是源码： <span style="color: #ff0000; font-size: 18px;"><a href="https://github.com/zhenbianshu/websocket"><span style="color: #ff0000;">我是源码链接 - github - 枕边书</span></a></span></p>
+<hr>
+<h1 id="toc_1">websocket</h1>
+<h3 id="toc_2">简介</h3>
+<p>WebSocket 不是一门技术，而是一种全新的协议。它应用 TCP 的 Socket（套接字），为网络应用定义了一个新的重要的能力：客户端和服务器端的双全工传输和双向通信。是继 Java applets、 XMLHttpRequest、 Adobe Flash,、ActiveXObject、 各类 Comet 技术之后，服务器推送客户端消息的新趋势。</p>
+<h3 id="toc_3">与http的关系</h3>
+<p>在网络分层上，websocket 与 http 协议都是应用层的协议，它们都是基于 tcp 传输层的，但是 websocket 在建立连接时，是借用 http 的 101 switch protocol 来达到协议转换（Upgrade）的，从 HTTP 协议切换成 WebSocket 通信协议,这个动作协议中称“握手”；</p>
+<p>握手成功后，websocket 就使用自己的协议规定的方式进行通讯，跟 http 就没有关系了。</p>
+<h3 id="toc_4">握手</h3>
+<p>以下是一个我自己的浏览器发送的典型的握手 http 头：&nbsp;</p>
+<p><img src="./网页实时聊天之PHP实现websocket - 枕边书 - 博客园_files/819496-20161128203922693-450969039.png" alt=""></p>
+<p>服务器收到握手请求后，提取出请求头中的 “Sec-WebSocket-Key” 字段，追回一个固定的字符串 ‘258EAFA5-E914-47DA-95CA-C5AB0DC85B11’， 然后进行 sha1 加密，最后转换为 base64 编码，作为 key 以 “Sec-WebSocket-Accept” 字段返回给客户端，客户端匹配此 key 后，便建立了连接，完成了握手；</p>
+<h3 id="toc_5">数据传输</h3>
+<p>websocket 有自己规定的数据传输格式，称为 帧（Frame），下图是一个数据帧的结构，其中单位为bit：</p>
+<div>
+<pre><code class="language-none">  0                   1                   2                   3
+  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+ +-+-+-+-+-------+-+-------------+-------------------------------+
+ |F|R|R|R| opcode|M| Payload len |    Extended payload length    |
+ |I|S|S|S|  (4)  |A|     (7)     |             (16/64)           |
+ |N|V|V|V|       |S|             |   (if payload len==126/127)   |
+ | |1|2|3|       |K|             |                               |
+ +-+-+-+-+-------+-+-------------+ - - - - - - - - - - - - - - - +
+ |     Extended payload length continued, if payload len == 127  |
+ + - - - - - - - - - - - - - - - +-------------------------------+
+ |                               |Masking-key, if MASK set to 1  |
+ +-------------------------------+-------------------------------+
+ | Masking-key (continued)       |          Payload Data         |
+ +-------------------------------- - - - - - - - - - - - - - - - +
+ :                     Payload Data continued ...                :
+ + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
+ |                     Payload Data continued ...                |
+ +---------------------------------------------------------------+</code></pre>
+</div>
+<p>具体每个字段是什么意思，有兴趣的可以看一下这篇文章 <a href="https://github.com/zhangkaitao/websocket-protocol/wiki/5.%E6%95%B0%E6%8D%AE%E5%B8%A7">The WebSocket Protocol 5.数据帧</a> 感觉自己对二进制的操作还不是很灵活，也就没有挑战自己写算法解析数据了，下面的数据帧解析和封装都是使用的网上的算法。</p>
+<p>不过，我工作中写支付网关中还是会经常用到数据的进制操作的，这个一定是要仔细研究总结一下的，嗯，先记下。</p>
+<hr>
+<h1 id="toc_6">PHP 实现 websocket 服务器</h1>
+<p>PHP 实现 websocket 的话，主要是应用 PHP 的 socket 函数库：</p>
+<p>PHP 的 socket 函数库跟 C 语言的 socket 函数非常类似，以前翻过一遍 APUE, 所以觉得还挺好理解。在 PHP 手册中看一遍 socket 函数，我想大家也能对 php 的 socket 编程有一定的认识。</p>
+<p>下面会在代码中对所用函数进行简单的注释。</p>
+<h3 id="toc_7">文件描述符</h3>
+<p>忽然提及'文件描述符'，大家可能会有些奇怪。</p>
+<p>但作为服务器，是必须要对已经连接的 socket 进行存储和识别的。每一个 socket 代表一个用户，如何关联和查询用户信息与 socket 的对应就是一个问题了，这里便应用了关于文件描述符的一点小技巧。</p>
+<p>我们知道 linux 是'万物皆文件'的，C 语言的 socket 的实现便是一个个的’文件描述符‘ ，这个文件描述符一般是打开文件的顺序递增的 int 数值，从 0 一直递增（当然系统是有限制的）。每一个 socket 都对应一个文件，读写 socket 都是操作对应的文件，所以也能像文件系统一样应用 read 和 write 函数。</p>
+<p>tips: linux 中， 标准输入对应的是文件描述符 0；标准输出对应的文件描述符是 1； 标准错误对应的文件描述符是 2；所以我们可以使用 0 1 2对输入输出重定向。</p>
+<p>那么类似于 C socket 的 PHP socket 自然也继承了这一点，它创建的 socket 也是类型于 int 值为 4 5 之类的资源类型。 我们可以使用 (int) 或 intval() 函数把 socket 转换为一个唯一的ID，从而可以实现用一个 ’类索引数组‘ 来存储 socket 资源和对应的用户信息；</p>
+<p>结果类似：</p>
+<div>
+<pre><code class="language-none">$connected_sockets = array(
+    (int)$socket =&gt; array(
+        'resource' =&gt; $socket,
+        'name' =&gt; $name,
+        'ip' =&gt; $ip,
+        'port' =&gt; $port,
+        ...
+    )
+)</code></pre>
+</div>
+<h3 id="toc_8">创建服务器socket</h3>
+<p>下面是一段创建服务器 socket 的代码：</p>
+<div>
+<pre><code class="language-none">// 创建一个 TCP socket, 此函数的可选值在官方文档中写得十分详细，这里不再提了
+$this-&gt;master = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+// 设置IP和端口重用,在重启服务器后能重新使用此端口;
+socket_set_option($this-&gt;master, SOL_SOCKET, SO_REUSEADDR, 1);
+// 将IP和端口绑定在服务器socket上;
+socket_bind($this-&gt;master, $host, $port);
+// listen函数使主动连接套接口变为被连接套接口，使得此 socket 能被其他 socket 访问，从而实现服务器功能。后面的参数则是自定义的待处理socket的最大数目，并发高的情况下，这个值可以设置大一点，虽然它也受系统环境的约束。
+socket_listen($this-&gt;master, self::LISTEN_SOCKET_NUM);</code></pre>
+</div>
+<p>这样，我们就得到一个服务器 socket，当有客户端连接到此 socket 上时，它将改变状态为可读，那就看接下来服务器的处理逻辑了。</p>
+<h3 id="toc_9">服务器逻辑</h3>
+<p>这里着重讲一下 <code>socket_select($read, $write, $except, $tv_sec [, $tv_usec])</code>:</p>
+<p>select 函数使用传统的 select 模型，可读、写、异常的 socket 会被分别放入 $socket, $write, $except 数组中,然后返回 状态改变的 socket 的数目，如果发生了错误，函数将会返回 false.</p>
+<p>需要注意的是最后两个时间参数，它们只有单位不同，可以搭配使用，用来表示 socket_select 阻塞的时长，为0时此函数立即返回，可以用于轮询机制。 为 NULL 时，函数会一直阻塞下去, 这里我们置 $tv_sec 参数为null，让它一直阻塞，直到有可操作的 socket 返回。</p>
+<p>下面是服务器的主要逻辑：</p>
+<div>
+<pre><code class="language-none">$write = $except = NULL;
+$sockets = array_column($this-&gt;sockets, 'resource'); // 获取到全部的 socket 资源
+$read_num = socket_select($sockets, $write, $except, NULL);
+
+foreach ($sockets as $socket) {
+        // 如果可读的是服务器 socket, 则处理连接逻辑;            
+        if ($socket == $this-&gt;master) {
+            socket_accept($this-&gt;master);
+            // socket_accept() 接受 请求 “正在 listen 的 socket（像我们的服务器 socket ）” 的连接, 并一个客户端 socket, 错误时返回 false;
+             self::connect($client);
+             continue;
+            }
+        // 如果可读的是其他已连接 socket ,则读取其数据,并处理应答逻辑
+        } else {
+            // 函数 socket_recv() 从 socket 中接受长度为 len 字节的数据，并保存在 $buffer 中。
+            $bytes = @socket_recv($socket, $buffer, 2048, 0);
+
+            if ($bytes &lt; 9) {
+                // 当客户端忽然中断时，服务器会接收到一个 8 字节长度的消息（由于其数据帧机制，8字节的消息我们认为它是客户端异常中断消息），服务器处理下线逻辑，并将其封装为消息广播出去
+                $recv_msg = $this-&gt;disconnect($socket);
+            } else {
+                // 如果此客户端还未握手，执行握手逻辑
+                if (!$this-&gt;sockets[(int)$socket]['handshake']) {
+                    self::handShake($socket, $buffer);
+                    continue;
+                } else {
+                    $recv_msg = self::parse($buffer);
+                }
+            }
+
+            // 广播消息
+            $this-&gt;broadcast($msg);
+        }
+    }
+}</code></pre>
+</div>
+<p>这里只是服务器处理消息的基础代码，日志记录和异常处理都略过了，而且还有些数据帧解析和封装的方法，各位也不一定看爱，有兴趣的可以去 github 上支持一下我的源码~~</p>
+<p>此外，为了便于服务器与客户端的交互，我自己定义了 json 类型的消息格式，形似：</p>
+<div>
+<pre><code class="language-none">$msg = [
+    'type' =&gt; $msg_type, // 有普通消息，上下线消息，服务器消息
+    'from' =&gt; $msg_resource, // 消息来源
+    'content' =&gt; $msg_content, // 消息内容
+    'user_list' =&gt; $uname_list, // 便于同步当前在线人数与姓名
+    ];</code></pre>
+</div>
+<hr>
+<h1 id="toc_10">客户端</h1>
+<h3 id="toc_11">创建客户端</h3>
+<p>前端我们使用 js 调用 Websocket 方法很简单就能创建一个 websocket 连接，服务器会为帮我们完成连接、握手的操作，js 使用事件机制来处理浏览器与服务器的交互：</p>
+<div>
+<pre><code class="language-none">// 创建一个 websocket 连接
+var ws = new WebSocket("ws://127.0.0.1:8080");
+
+// websocket 创建成功事件
+ws.onopen = function () {
+};
+
+// websocket 接收到消息事件
+ws.onmessage = function (e) {
+    var msg = JSON.parse(e.data);
+}
+
+// websocket 错误事件
+ws.onerror = function () {
+};</code></pre>
+</div>
+<p>发送消息也很简单，直接调用 <code>ws.send(msg)</code> 方法就行了。</p>
+<h3 id="toc_12">页面功能</h3>
+<p>页面部分主要是让用户使用起来方便，这里给消息框 textarea 添加了一个键盘监控事件，当用户按下回车键时直接发送消息；</p>
+<div>
+<pre><code class="language-none">function confirm(event) {
+    var key_num = event.keyCode;
+    if (13 == key_num) {
+        send();
+    } else {
+        return false;
+    }
+}</code></pre>
+</div>
+<p>还有用户打开客户端时生成一个默认唯一用户名；</p>
+<p>然后是一些对数据的解析构造，对客户端页面的更新，这里就不再啰嗦了，感兴趣的可以看源码。</p>
+<h3 id="toc_13">用户名异步处理</h3>
+<p>这里不得不提一下用户登陆时确定用户名时的一个小问题，我原来是想在客户端创建一个连接后直接发送用户名到服务器，可是控制台里报出了 “websocket 仍在连接中或已关闭” 的错误信息。</p>
+<p><em>Uncaught DOMException: Failed to execute 'send' on 'WebSocket': Still in CONNECTING state.</em></p>
+<p>考虑到连接可能还没处理好，我就实现了 sleep 方法等了一秒再发送用户名，可是错误仍然存在。</p>
+<p>后来忽然想到 js 的单线程阻塞机制，才明白使用 sleep 一直阻塞也是没有用的，利用好 js 的事件机制才是正道：于是在服务器端添加逻辑，在握手成功后，向客户端发送握手已成功的消息；客户端先将用户名存入一个全局变量，接收到服务器的握手成功的提醒消息后再发送用户名，于是成功在第一时间更新用户名。</p>
+<hr>
+<h1 id="toc_14">小结</h1>
+<h3 id="toc_15">聊天室扩展方向</h3>
+<p>简易聊天室已经完成，当然还要给它带有希望的美好未来，希望有人去实现：</p>
+<ul>
+<li>页面美化（信息添加颜色等）</li>
+<li>服务器识别 '@' 字符而只向某一个 socket 写数据实现聊天室的私聊；</li>
+<li>多进程（使用 redis 等缓存数据库来实现资源的共享），可参考我以前的一篇文章： <a href="http://www.cnblogs.com/zhenbianshu/p/5676822.html">初探PHP多进程</a></li>
+<li>消息记录数据库持久化（log 日志还是不方便分析）</li>
+<li>...</li>
+</ul>
+<h3 id="toc_16">总结</h3>
+<p>多读些经典书籍还是很有用的，有些东西真的是触类旁通，APUE/UNP 还是要再多翻几遍。此外互联网技术日新月异，挑一些自己喜欢的学习一下，跟大家分享一下也是挺舒服的（虽然程序和博客加一块用了至少10个小时...）。</p>
+<p>参考：</p>
+<p><a href="https://github.com/zhangkaitao/websocket-protocol">websocket协议翻译</a></p>
+<p><a href="http://mp.weixin.qq.com/s?__biz=MjM5OTA1MDUyMA==&amp;mid=2655437317&amp;idx=3&amp;sn=c3aace00b57897d7a11e7abb3e87b2ec&amp;chksm=bd730e728a0487649da2afb12a76a6844bc9a7f088fc70c80625dc837e2e01c01c70f49bc6ad&amp;scene=21#wechat_redirect">刨根问底 HTTP 和 WebSocket 协议（下）</a></p>
+<p><a href="https://github.com/abbshr/abbshr.github.io/issues/22">学习WebSocket协议—从顶层到底层的实现原理（修订版）</a></p>
+<p>嗯，持续更新。喜欢的可以点个推荐或关注，有错漏之处，请指正，谢谢。</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block"><div id="BlogPostCategory">
+    分类: 
+            <a href="https://www.cnblogs.com/zhenbianshu/category/750537.html" target="_blank">PHP</a></div>
+<div id="EntryTag">
+    标签: 
+            <a href="https://www.cnblogs.com/zhenbianshu/tag/websocket/">websocket</a>,             <a href="https://www.cnblogs.com/zhenbianshu/tag/PHP/">PHP</a>,             <a href="https://www.cnblogs.com/zhenbianshu/tag/%E8%81%8A%E5%A4%A9%E5%AE%A4/">聊天室</a></div>
+
+    <div id="blog_post_info">
+<div id="green_channel">
+        <a href="javascript:void(0);" id="green_channel_digg" onclick="DiggIt(6111257,cb_blogId,1);green_channel_success(this,&#39;谢谢推荐！&#39;);">好文要顶</a>
+        <a id="green_channel_follow" onclick="follow(&#39;1e697f43-716d-e511-9fc1-ac853d9f53cc&#39;);" href="javascript:void(0);">关注我</a>
+    <a id="green_channel_favorite" onclick="AddToWz(cb_entryId);return false;" href="javascript:void(0);">收藏该文</a>
+    <a id="green_channel_weibo" href="javascript:void(0);" title="分享至新浪微博" onclick="ShareToTsina()"><img src="./网页实时聊天之PHP实现websocket - 枕边书 - 博客园_files/icon_weibo_24.png" alt=""></a>
+    <a id="green_channel_wechat" href="javascript:void(0);" title="分享至微信" onclick="shareOnWechat()"><img src="./网页实时聊天之PHP实现websocket - 枕边书 - 博客园_files/wechat.png" alt=""></a>
+</div>
+<div id="author_profile">
+    <div id="author_profile_info" class="author_profile_info">
+            <a href="https://home.cnblogs.com/u/zhenbianshu/" target="_blank"><img src="./网页实时聊天之PHP实现websocket - 枕边书 - 博客园_files/20160716164326.png" class="author_avatar" alt=""></a>
+        <div id="author_profile_detail" class="author_profile_info">
+            <a href="https://home.cnblogs.com/u/zhenbianshu/">枕边书</a><br>
+            <a href="https://home.cnblogs.com/u/zhenbianshu/followees/">关注 - 24</a><br>
+            <a href="https://home.cnblogs.com/u/zhenbianshu/followers/">粉丝 - 446</a>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="author_profile_honor">推荐博客</div>
+    <div id="author_profile_follow">
+                <a href="javascript:void(0);" onclick="follow(&#39;1e697f43-716d-e511-9fc1-ac853d9f53cc&#39;);return false;">+加关注</a>
+    </div>
+</div>
+<div id="div_digg">
+    <div class="diggit" onclick="votePost(6111257,&#39;Digg&#39;)">
+        <span class="diggnum" id="digg_count">19</span>
+    </div>
+    <div class="buryit" onclick="votePost(6111257,&#39;Bury&#39;)">
+        <span class="burynum" id="bury_count">0</span>
+    </div>
+    <div class="clear"></div>
+    <div class="diggword" id="digg_tips">
+    </div>
+</div>
+
+<script type="text/javascript">
+    currentDiggType = 0;
+</script></div>
+    <div class="clear"></div>
+    <div id="post_next_prev">
+
+    <a href="https://www.cnblogs.com/zhenbianshu/p/6063340.html" class="p_n_p_prefix">« </a> 上一篇：    <a href="https://www.cnblogs.com/zhenbianshu/p/6063340.html" title="发布于 2016-11-14 20:32">PHP中的回调函数和匿名函数</a>
+    <br>
+    <a href="https://www.cnblogs.com/zhenbianshu/p/6163157.html" class="p_n_p_prefix">» </a> 下一篇：    <a href="https://www.cnblogs.com/zhenbianshu/p/6163157.html" title="发布于 2016-12-12 08:37">WEB开发中的字符集和编码</a>
+
+</div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2016-11-28 20:43</span>&nbsp;
+<a href="https://www.cnblogs.com/zhenbianshu/">枕边书</a>&nbsp;
+阅读(<span id="post_view_count">73133</span>)&nbsp;
+评论(<span id="post_comment_count">63</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=6111257" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(6111257);return false;">收藏</a></div>
+        </div>
+	    
+	    
+    </div><!--end: topics 文章、评论容器-->
+</div>
+<script src="./网页实时聊天之PHP实现websocket - 枕边书 - 博客园_files/highlight.min.js.下載"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 247982, cb_blogApp = 'zhenbianshu', cb_blogUserGuid = '1e697f43-716d-e511-9fc1-ac853d9f53cc';
+    var cb_entryId = 6111257, cb_entryCreatedDate = '2016-11-28 20:43', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder">
+
+<div id="comment_pager_top">
+    
+    <div class="pager">
+        <!-- 上一页 -->
+        <a href="https://www.cnblogs.com/zhenbianshu/p/6111257.html#!comments" onclick="commentManager.renderComments(1, 50); return false;">
+            &lt; Prev
+        </a>
+
+        <!-- 第一页 -->
+        <a href="https://www.cnblogs.com/zhenbianshu/p/6111257.html#!comments" onclick="commentManager.renderComments(1, 50); return false;">
+            1
+        </a>
+
+        <!-- 前半部分页码 -->
+        
+
+        <!-- 当前页 -->
+        <span class="current">2</span>
+
+        <!-- 后半部分页码 -->
+
+        
+        <!-- 末尾页 -->
+        
+
+        <!-- 下一页 -->
+        
+    </div>
+</div>
+
+<br>
+<div class="feedback_area_title">评论列表</div>
+<div class="feedbackNoItems"><div class="feedbackNoItems"></div></div>	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+				</div>
+				
+<a href="https://www.cnblogs.com/zhenbianshu/p/6111257.html#3936531" class="layer">#51楼</a>
+<a name="3936531" id="comment_anchor_3936531"></a>
+
+ 
+<span class="comment_date">2018-03-29 10:46</span>
+
+ 
+
+            <a id="a_comment_author_3936531" href="https://www.cnblogs.com/xuey/" target="_blank">雪剑无影</a>
+
+			</div>
+			<div class="feedbackCon">
+				
+<div id="comment_body_3936531" class="blog_comment_body">
+    请问有源码 吗，分享一下
+</div>
+        <div class="comment_vote">
+            <span class="comment_error" style="color: red"></span>
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3936531, &#39;Digg&#39;, this.parentElement, false);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment(3936531, &#39;Bury&#39;, this.parentElement, false);">
+                反对(0)
+            </a>
+        </div>
+        <span id="comment_3936531_avatar" style="display:none">
+            https://pic.cnblogs.com/face/1227020/20170827095629.png
+        </span>
+
+			</div>
+		</div>
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+				</div>
+				
+<a href="https://www.cnblogs.com/zhenbianshu/p/6111257.html#3936533" class="layer">#52楼</a>
+<a name="3936533" id="comment_anchor_3936533"></a>
+[<span class="louzhu">楼主</span>]
+ 
+<span class="comment_date">2018-03-29 10:48</span>
+
+ 
+
+            <a id="a_comment_author_3936533" href="https://www.cnblogs.com/zhenbianshu/" target="_blank">枕边书</a>
+
+			</div>
+			<div class="feedbackCon">
+				
+<div id="comment_body_3936533" class="blog_comment_body">
+    <a href="https://www.cnblogs.com/zhenbianshu/p/6111257.html#3936531" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,3936531);">@</a>
+雪剑无影<br>正文中有链接的。。。<br><a href="https://github.com/zhenbianshu/websocket" target="_blank">https://github.com/zhenbianshu/websocket</a>
+</div>
+        <div class="comment_vote">
+            <span class="comment_error" style="color: red"></span>
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3936533, &#39;Digg&#39;, this.parentElement, false);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment(3936533, &#39;Bury&#39;, this.parentElement, false);">
+                反对(0)
+            </a>
+        </div>
+        <span id="comment_3936533_avatar" style="display:none">
+            https://pic.cnblogs.com/face/819496/20160716164326.png
+        </span>
+
+			</div>
+		</div>
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+				</div>
+				
+<a href="https://www.cnblogs.com/zhenbianshu/p/6111257.html#3936609" class="layer">#53楼</a>
+<a name="3936609" id="comment_anchor_3936609"></a>
+
+ 
+<span class="comment_date">2018-03-29 11:52</span>
+
+ 
+
+            <a id="a_comment_author_3936609" href="https://www.cnblogs.com/xuey/" target="_blank">雪剑无影</a>
+
+			</div>
+			<div class="feedbackCon">
+				
+<div id="comment_body_3936609" class="blog_comment_body">
+    <a href="https://www.cnblogs.com/zhenbianshu/p/6111257.html#3936533" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,3936533);">@</a>
+枕边书<br>谢谢分享
+</div>
+        <div class="comment_vote">
+            <span class="comment_error" style="color: red"></span>
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3936609, &#39;Digg&#39;, this.parentElement, false);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment(3936609, &#39;Bury&#39;, this.parentElement, false);">
+                反对(0)
+            </a>
+        </div>
+        <span id="comment_3936609_avatar" style="display:none">
+            https://pic.cnblogs.com/face/1227020/20170827095629.png
+        </span>
+
+			</div>
+		</div>
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+				</div>
+				
+<a href="https://www.cnblogs.com/zhenbianshu/p/6111257.html#4002154" class="layer">#54楼</a>
+<a name="4002154" id="comment_anchor_4002154"></a>
+
+ 
+<span class="comment_date">2018-06-21 09:02</span>
+
+ 
+
+            <a id="a_comment_author_4002154" href="https://www.cnblogs.com/cshaptx4869/" target="_blank">银酱</a>
+
+			</div>
+			<div class="feedbackCon">
+				
+<div id="comment_body_4002154" class="blog_comment_body">
+    感谢楼主的无私分享
+</div>
+        <div class="comment_vote">
+            <span class="comment_error" style="color: red"></span>
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(4002154, &#39;Digg&#39;, this.parentElement, false);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment(4002154, &#39;Bury&#39;, this.parentElement, false);">
+                反对(0)
+            </a>
+        </div>
+        <span id="comment_4002154_avatar" style="display:none">
+            https://pic.cnblogs.com/face/1215492/20190129094611.png
+        </span>
+
+			</div>
+		</div>
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+				</div>
+				
+<a href="https://www.cnblogs.com/zhenbianshu/p/6111257.html#4012222" class="layer">#55楼</a>
+<a name="4012222" id="comment_anchor_4012222"></a>
+
+ 
+<span class="comment_date">2018-07-04 11:36</span>
+
+ 
+
+            <a id="a_comment_author_4012222" href="https://home.cnblogs.com/u/1433958/" target="_blank">deelian</a>
+
+			</div>
+			<div class="feedbackCon">
+				
+<div id="comment_body_4012222" class="blog_comment_body">
+    这个站<br><a href="http://www.ebolaunion.gq/" target="_blank">http://www.ebolaunion.gq/</a> <br>右下角那个东东，原理是不是和你的一样的？
+</div>
+        <div class="comment_vote">
+            <span class="comment_error" style="color: red"></span>
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(4012222, &#39;Digg&#39;, this.parentElement, false);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment(4012222, &#39;Bury&#39;, this.parentElement, false);">
+                反对(0)
+            </a>
+        </div>
+        
+
+			</div>
+		</div>
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+				</div>
+				
+<a href="https://www.cnblogs.com/zhenbianshu/p/6111257.html#4012224" class="layer">#56楼</a>
+<a name="4012224" id="comment_anchor_4012224"></a>
+
+ 
+<span class="comment_date">2018-07-04 11:37</span>
+
+ 
+
+            <a id="a_comment_author_4012224" href="https://home.cnblogs.com/u/1433958/" target="_blank">deelian</a>
+
+			</div>
+			<div class="feedbackCon">
+				
+<div id="comment_body_4012224" class="blog_comment_body">
+    <a href="https://www.cnblogs.com/zhenbianshu/p/6111257.html#3936531" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,3936531);">@</a>
+雪剑无影<br>看下这个站右下角的demo<br><a href="http://www.ebolaunion.gq/" target="_blank">http://www.ebolaunion.gq/</a>
+</div>
+        <div class="comment_vote">
+            <span class="comment_error" style="color: red"></span>
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(4012224, &#39;Digg&#39;, this.parentElement, false);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment(4012224, &#39;Bury&#39;, this.parentElement, false);">
+                反对(0)
+            </a>
+        </div>
+        
+
+			</div>
+		</div>
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+				</div>
+				
+<a href="https://www.cnblogs.com/zhenbianshu/p/6111257.html#4026853" class="layer">#57楼</a>
+<a name="4026853" id="comment_anchor_4026853"></a>
+
+ 
+<span class="comment_date">2018-07-23 15:32</span>
+
+ 
+
+            <a id="a_comment_author_4026853" href="https://www.cnblogs.com/xbdr/" target="_blank">小白大仁</a>
+
+			</div>
+			<div class="feedbackCon">
+				
+<div id="comment_body_4026853" class="blog_comment_body">
+    这个new WebSocket("ws://127.0.0.1:8080"); 是怎么配的？是配到server.php的路径吗？
+</div>
+        <div class="comment_vote">
+            <span class="comment_error" style="color: red"></span>
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(4026853, &#39;Digg&#39;, this.parentElement, false);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment(4026853, &#39;Bury&#39;, this.parentElement, false);">
+                反对(0)
+            </a>
+        </div>
+        <span id="comment_4026853_avatar" style="display:none">
+            https://pic.cnblogs.com/face/1445475/20180719102337.png
+        </span>
+
+			</div>
+		</div>
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+				</div>
+				
+<a href="https://www.cnblogs.com/zhenbianshu/p/6111257.html#4026858" class="layer">#58楼</a>
+<a name="4026858" id="comment_anchor_4026858"></a>
+[<span class="louzhu">楼主</span>]
+ 
+<span class="comment_date">2018-07-23 15:36</span>
+
+ 
+
+            <a id="a_comment_author_4026858" href="https://www.cnblogs.com/zhenbianshu/" target="_blank">枕边书</a>
+
+			</div>
+			<div class="feedbackCon">
+				
+<div id="comment_body_4026858" class="blog_comment_body">
+    <a href="https://www.cnblogs.com/zhenbianshu/p/6111257.html#4026853" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,4026853);">@</a>
+小白大仁<br>跟 server.php 没关系，配的你选择的本地IP和端口。
+</div>
+        <div class="comment_vote">
+            <span class="comment_error" style="color: red"></span>
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(4026858, &#39;Digg&#39;, this.parentElement, false);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment(4026858, &#39;Bury&#39;, this.parentElement, false);">
+                反对(0)
+            </a>
+        </div>
+        <span id="comment_4026858_avatar" style="display:none">
+            https://pic.cnblogs.com/face/819496/20160716164326.png
+        </span>
+
+			</div>
+		</div>
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+				</div>
+				
+<a href="https://www.cnblogs.com/zhenbianshu/p/6111257.html#4026867" class="layer">#59楼</a>
+<a name="4026867" id="comment_anchor_4026867"></a>
+
+ 
+<span class="comment_date">2018-07-23 15:43</span>
+
+ 
+
+            <a id="a_comment_author_4026867" href="https://www.cnblogs.com/xbdr/" target="_blank">小白大仁</a>
+
+			</div>
+			<div class="feedbackCon">
+				
+<div id="comment_body_4026867" class="blog_comment_body">
+    <a href="https://www.cnblogs.com/zhenbianshu/p/6111257.html#4026858" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,4026858);">@</a>
+枕边书<br>那server.php要不要运行？
+</div>
+        <div class="comment_vote">
+            <span class="comment_error" style="color: red"></span>
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(4026867, &#39;Digg&#39;, this.parentElement, false);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment(4026867, &#39;Bury&#39;, this.parentElement, false);">
+                反对(0)
+            </a>
+        </div>
+        <span id="comment_4026867_avatar" style="display:none">
+            https://pic.cnblogs.com/face/1445475/20180719102337.png
+        </span>
+
+			</div>
+		</div>
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+				</div>
+				
+<a href="https://www.cnblogs.com/zhenbianshu/p/6111257.html#4026871" class="layer">#60楼</a>
+<a name="4026871" id="comment_anchor_4026871"></a>
+[<span class="louzhu">楼主</span>]
+ 
+<span class="comment_date">2018-07-23 15:47</span>
+
+ 
+
+            <a id="a_comment_author_4026871" href="https://www.cnblogs.com/zhenbianshu/" target="_blank">枕边书</a>
+
+			</div>
+			<div class="feedbackCon">
+				
+<div id="comment_body_4026871" class="blog_comment_body">
+    <a href="https://www.cnblogs.com/zhenbianshu/p/6111257.html#4026867" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,4026867);">@</a>
+小白大仁<br>server.php 就是简易版的 nginx 服务器，当然要运行。
+</div>
+        <div class="comment_vote">
+            <span class="comment_error" style="color: red"></span>
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(4026871, &#39;Digg&#39;, this.parentElement, false);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment(4026871, &#39;Bury&#39;, this.parentElement, false);">
+                反对(0)
+            </a>
+        </div>
+        <span id="comment_4026871_avatar" style="display:none">
+            https://pic.cnblogs.com/face/819496/20160716164326.png
+        </span>
+
+			</div>
+		</div>
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+				</div>
+				
+<a href="https://www.cnblogs.com/zhenbianshu/p/6111257.html#4110738" class="layer">#61楼</a>
+<a name="4110738" id="comment_anchor_4110738"></a>
+
+ 
+<span class="comment_date">2018-11-09 14:42</span>
+
+ 
+
+            <a id="a_comment_author_4110738" href="https://www.cnblogs.com/hshanghai/" target="_blank">失忆王子</a>
+
+			</div>
+			<div class="feedbackCon">
+				
+<div id="comment_body_4110738" class="blog_comment_body">
+    您好，需要nginx配置端口吗，我配置了nginx的8080，socket就bind就报错了，怎么让握手指到server.php端口
+</div>
+        <div class="comment_vote">
+            <span class="comment_error" style="color: red"></span>
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(4110738, &#39;Digg&#39;, this.parentElement, false);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment(4110738, &#39;Bury&#39;, this.parentElement, false);">
+                反对(0)
+            </a>
+        </div>
+        <span id="comment_4110738_avatar" style="display:none">
+            https://pic.cnblogs.com/face/558170/20130820085157.png
+        </span>
+
+			</div>
+		</div>
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+				</div>
+				
+<a href="https://www.cnblogs.com/zhenbianshu/p/6111257.html#4110745" class="layer">#62楼</a>
+<a name="4110745" id="comment_anchor_4110745"></a>
+
+ 
+<span class="comment_date">2018-11-09 14:46</span>
+
+ 
+
+            <a id="a_comment_author_4110745" href="https://www.cnblogs.com/hshanghai/" target="_blank">失忆王子</a>
+
+			</div>
+			<div class="feedbackCon">
+				
+<div id="comment_body_4110745" class="blog_comment_body">
+    是否可以给个微信号，希望能请教您问题
+</div>
+        <div class="comment_vote">
+            <span class="comment_error" style="color: red"></span>
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(4110745, &#39;Digg&#39;, this.parentElement, false);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment(4110745, &#39;Bury&#39;, this.parentElement, false);">
+                反对(0)
+            </a>
+        </div>
+        <span id="comment_4110745_avatar" style="display:none">
+            https://pic.cnblogs.com/face/558170/20130820085157.png
+        </span>
+
+			</div>
+		</div>
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+				</div>
+				
+<a href="https://www.cnblogs.com/zhenbianshu/p/6111257.html#4360406" class="layer">#63楼</a>
+<a name="4360406" id="comment_anchor_4360406"></a>
+
+        <span id="comment-maxId" style="display:none">4360406</span>
+        <span id="comment-maxDate" style="display:none">9/18/2019 11:11:06 AM</span>
+ 
+<span class="comment_date">2019-09-18 11:11</span>
+
+ 
+
+            <a id="a_comment_author_4360406" href="https://www.cnblogs.com/dreameng/" target="_blank">dreameng~</a>
+
+			</div>
+			<div class="feedbackCon">
+				
+<div id="comment_body_4360406" class="blog_comment_body">
+    谢谢分享
+</div>
+        <div class="comment_vote">
+            <span class="comment_error" style="color: red"></span>
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(4360406, &#39;Digg&#39;, this.parentElement, false);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment(4360406, &#39;Bury&#39;, this.parentElement, false);">
+                反对(0)
+            </a>
+        </div>
+        <span id="comment_4360406_avatar" style="display:none">
+            https://pic.cnblogs.com/face/1037506/20190916093918.png
+        </span>
+
+			</div>
+		</div>
+
+<div id="comment_pager_bottom">
+    
+    <div class="pager">
+        <!-- 上一页 -->
+        <a href="https://www.cnblogs.com/zhenbianshu/p/6111257.html#!comments" onclick="commentManager.renderComments(1, 50); return false;">
+            &lt; Prev
+        </a>
+
+        <!-- 第一页 -->
+        <a href="https://www.cnblogs.com/zhenbianshu/p/6111257.html#!comments" onclick="commentManager.renderComments(1, 50); return false;">
+            1
+        </a>
+
+        <!-- 前半部分页码 -->
+        
+
+        <!-- 当前页 -->
+        <span class="current">2</span>
+
+        <!-- 后半部分页码 -->
+
+        
+        <!-- 末尾页 -->
+        
+
+        <!-- 下一页 -->
+        
+    </div>
+</div>
+
+
+</div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="https://www.cnblogs.com/zhenbianshu/p/6111257.html#" onclick="return RefreshPage();">刷新页面</a><a href="https://www.cnblogs.com/zhenbianshu/p/6111257.html#top">返回顶部</a></div>
+    <div id="comment_form_container"><div class="login_tips">
+    注册用户登录后才能发表评论，请 
+    <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return login(&#39;commentform&#39;);">登录</a>
+     或 
+    <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return register();">注册</a>，
+    <a href="https://www.cnblogs.com/">访问</a> 网站首页。
+</div></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"><a href="http://www.ucancode.com/index.htm" target="_blank" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;T2-ucancode&#39;)">【推荐】超50万行VC++源码: 大型组态工控、电力仿真CAD与GIS源码库</a><br><a href="https://cloud.tencent.com/act/developer?fromSource=gwzcw.3196333.3196333.3196333&amp;utm_medium=cpc&amp;utm_id=gwzcw.3196333.3196333.3196333" target="_blank" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;T2-腾讯云&#39;)">【推荐】开发者上云福利，腾讯云1核4G云服务器11元/月起</a><br><a href="https://cloud.baidu.com/campaign/Annualceremony-2020/index.html?track=cp:dsp|pf:pc|pp:chui-bokeyuan-huodong-20niandushengdian-BCC-cpaxingshi-20200107|pu:cpa-xingshi|ci:2020ndsd|kw:2185443" target="_blank" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;T2-百度云&#39;)">【推荐】开年盛典，百度智能云1核1G云服务器84元/年</a><br><a href="https://developer.aliyun.com/topic/feiyan2020?utm_content=g_1000102348" target="_blank" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;T2-阿里云-疫情公益专题&#39;)">【推荐】像阿里巴巴一样远程办公，这些资源+工具+方案都好用</a><br><a href="https://developer.aliyun.com/topic/feiyan2020?utm_content=g_1000102348" target="_blank" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;T2-阿里云-疫情公益专题&#39;)">【推荐】疫情期间如何高效工作？阿里巴巴为你提供办公工具和资源</a><br></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="./网页实时聊天之PHP实现websocket - 枕边书 - 博客园_files/gpt.js.下載"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;" data-google-query-id="CIiE75nLxucCFUXZvQodXfgICg"><div id="google_ads_iframe_/1090369/C1_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/1090369/C1_0" title="3rd party ad content" name="google_ads_iframe_/1090369/C1_0" width="300" height="250" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" sandbox="allow-forms allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation" style="border: 0px; vertical-align: bottom;" data-google-container-id="1" data-load-complete="true" src="./网页实时聊天之PHP实现websocket - 枕边书 - 博客园_files/saved_resource(1).html"></iframe></div></div>
+    </div>
+    <div id="under_post_news"><div class="recomm-block"><b>相关博文：</b><br>·  <a title="网页实时聊天之js和jQuery实现ajax长轮询" href="https://www.cnblogs.com/zhenbianshu/p/4964095.html" target="_blank" onclick="clickRecomItmem(4964095)">网页实时聊天之js和jQuery实现ajax长轮询</a><br>·  <a title="Nodejs之WebSocket" href="https://www.cnblogs.com/zh719588366/p/6261008.html" target="_blank" onclick="clickRecomItmem(6261008)">Nodejs之WebSocket</a><br>·  <a title="通过(Node Js||.Net)基于HTML5的WebSocket实现实时视频文字传输(上)" href="https://www.cnblogs.com/beyondblog/archive/2013/04/11/3015756.html" target="_blank" onclick="clickRecomItmem(3015756)">通过(Node Js||.Net)基于HTML5的WebSocket实现实时视频文字传输(上)</a><br>·  <a title="WebSocket实现Java后台消息推送" href="https://www.cnblogs.com/freud/p/8397934.html" target="_blank" onclick="clickRecomItmem(8397934)">WebSocket实现Java后台消息推送</a><br>·  <a title="js--webSocket入门" href="https://www.cnblogs.com/lxtblogs/p/4947898.html" target="_blank" onclick="clickRecomItmem(4947898)">js--webSocket入门</a><br>»  <a target="_blank" href="https://recomm.cnblogs.com/blogpost/6111257">更多推荐...</a><div id="cnblogs_t5"><a href="https://developer.aliyun.com/topic/feiyan2020?utm_content=g_1000102348" target="_blank" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;T5-阿里云-疫情公益专题&#39;)">疫情期间如何高效工作？阿里巴巴为你提供办公工具和资源！</a></div></div></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;" data-google-query-id="CImE75nLxucCFUXZvQodXfgICg">
+            
+        <div id="google_ads_iframe_/1090369/C2_0__container__" style="border: 0pt none; display: inline-block; width: 468px; height: 60px;"><iframe frameborder="0" src="./网页实时聊天之PHP实现websocket - 枕边书 - 博客园_files/container.html" id="google_ads_iframe_/1090369/C2_0" title="3rd party ad content" name="" scrolling="no" marginwidth="0" marginheight="0" width="468" height="60" data-is-safeframe="true" sandbox="allow-forms allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation" data-google-container-id="2" style="border: 0px; vertical-align: bottom;" data-load-complete="true"></iframe></div></div>
+    </div>
+    <div id="under_post_kb">
+<div class="itnews c_ad_block">
+    <b>最新 IT 新闻</b>:
+    <br>
+ ·              <a href="https://news.cnblogs.com/n/655605/" target="_blank">战疫之下的“空中哨兵们”</a>
+            <br>
+ ·              <a href="https://news.cnblogs.com/n/655604/" target="_blank">俄罗斯自研CPU受阻 说好的8000元一台的采购黄了</a>
+            <br>
+ ·              <a href="https://news.cnblogs.com/n/655603/" target="_blank">速升Android 10，黑客可通过旧版安卓系统蓝牙发送恶意软件</a>
+            <br>
+ ·              <a href="https://news.cnblogs.com/n/655602/" target="_blank">神秘水星迎绝佳观测时机，10日上演今年首场大距</a>
+            <br>
+ ·              <a href="https://news.cnblogs.com/n/655601/" target="_blank">云网络安全创业公司「Netskope」获 3.4 亿美元融资</a>
+            <br>
+    » <a href="https://news.cnblogs.com/" title="IT 新闻" target="_blank">更多新闻...</a>
+</div></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>
+	</div><!--end: forFlow -->
+	</div><!--end: mainContent 主体内容容器-->
+
+	<div id="sideBar">
+		<div id="sideBarMain">
+			
+<div id="sidebar_news" class="newsItem"><!--done-->
+<h3 class="catListTitle">公告</h3>
+
+<div id="blog-news">
+    <div style="padding: 13px; font-family: &quot;Helvetica Neue&quot;, Helvetica, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, Arial, sans-serif; font-size: 15px; line-height: 1.8; background: #fff; color: #7e8c8d; border: 1px solid rgb(222, 222, 222)">
+    欢迎来到我的博客园~
+    <br>
+    本人后端开发，对 网络编程 和 Unix 系统编程有浓厚兴趣。
+    <br>
+    GitHub：<a href="https://github.com/zhenbianshu">zhenbianshu</a>
+    <br>
+    博客原创，首发于Github.io： <a href="https://zhenbianshu.github.io/">枕边书</a>，也会更新一些工作和学习的心得，欢迎交流关注。
+<div id="wbshow"><iframe width="100%" height="300" class="share_self" frameborder="0" scrolling="no" src="./网页实时聊天之PHP实现websocket - 枕边书 - 博客园_files/index.html"></iframe></div>
+</div>
+
+<script type="text/javascript">window['__document_write_ajax_callbacks__']['3']();</script><script type="text/javascript">window['__document_write_ajax_callbacks__']['1']();</script>
+    <div id="profile_block">
+        昵称：
+        <a href="https://home.cnblogs.com/u/zhenbianshu/">
+            枕边书
+        </a>
+        <br>
+        园龄：
+        <a href="https://home.cnblogs.com/u/zhenbianshu/" title="入园时间：2015-10-08">
+            4年4个月
+        </a>
+        <br>
+荣誉：                <a href="https://www.cnblogs.com/expert/">推荐博客</a>
+                <br>
+        粉丝：
+        <a href="https://home.cnblogs.com/u/zhenbianshu/followers/">
+            446
+        </a>
+        <br>
+        关注：
+        <a href="https://home.cnblogs.com/u/zhenbianshu/followees/">
+            24
+        </a>
+        <div id="p_b_follow">
+<a href="javascript:void(0)" onclick="follow(&#39;1e697f43-716d-e511-9fc1-ac853d9f53cc&#39;)">+加关注</a></div>
+        <script type="text/javascript">window['__document_write_ajax_callbacks__']['4']();</script><script>window['__document_write_ajax_callbacks__']['2']();</script>
+    </div>
+</div>
+
+</div>
+
+			<div id="blog-calendar" style="display:none"></div><script>loadBlogDefaultCalendar();</script>
+			
+			<div id="leftcontentcontainer">
+				<div id="blog-sidecolumn">
+<!-- 搜索 -->
+<div id="sidebar_search" class="sidebar-block">
+    
+</div>
+
+<!-- 常用链接 -->
+<div id="sidebar_shortcut" class="sidebar-block">
+    <div class="catListLink">
+<h3 class="catListTitle">
+常用链接
+</h3>
+<ul>
+		<li>
+
+<a href="https://www.cnblogs.com/zhenbianshu/p/" title="我的博客的随笔列表">我的随笔</a>
+</li>
+		<li>
+
+<a href="https://www.cnblogs.com/zhenbianshu/MyComments.html" title="我的发表过的评论列表">我的评论</a>
+</li>
+		<li>
+
+<a href="https://www.cnblogs.com/zhenbianshu/OtherPosts.html" title="我评论过的随笔列表">我的参与</a>
+</li>
+		<li>
+
+<a href="https://www.cnblogs.com/zhenbianshu/RecentComments.html" title="我的博客的评论列表">最新评论</a>
+</li>
+		<li>
+
+<a href="https://www.cnblogs.com/zhenbianshu/tag/" title="我的博客的标签列表">我的标签</a>
+</li>
+
+</ul>
+<div id="itemListLin_con" style="display:none;">
+<ul>
+
+</ul>
+</div>
+</div>
+
+
+</div>
+
+<!-- 最新随笔 -->
+
+
+
+<!-- 我的标签 -->
+
+
+<!-- 积分与排名 -->
+<div id="sidebar_scorerank" class="sidebar-block">
+    <div class="catListBlogRank">
+<h3 class="catListTitle">积分与排名</h3>
+<ul>
+	<li class="liScore">
+		积分 -	
+182944
+	</li>
+	<li class="liRank">
+		排名 -	
+2644
+	</li>
+</ul>
+</div>
+
+
+
+
+</div>
+
+<!-- 随笔分类、随笔档案、文章分类、新闻分类、相册、链接 -->
+<div id="sidebar_categories">
+    
+        <div id="sidebar_postcategory" class="catListPostCategory sidebar-block">
+            <h3 class="catListTitle">
+                
+
+随笔分类
+
+
+
+            </h3>
+
+
+            <ul>
+
+                        <li>
+                            
+<a href="https://www.cnblogs.com/zhenbianshu/category/965172.html" rel="" target="">
+    C/C++(4)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/zhenbianshu/category/1215386.html" rel="" target="">
+    Java(8)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/zhenbianshu/category/750538.html" rel="" target="">
+    JS(3)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/zhenbianshu/category/760728.html" rel="" target="">
+    LINUX(9)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/zhenbianshu/category/750537.html" rel="" target="">
+    PHP(21)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/zhenbianshu/category/976016.html" rel="" target="">
+    Profession(6)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/zhenbianshu/category/750540.html" rel="" target="">
+    WEB(4)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/zhenbianshu/category/946907.html" rel="" target="">
+    后端(24)
+</a>
+ 
+
+                        </li>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/zhenbianshu/category/750542.html" rel="" target="">
+    算法(6)
+</a>
+ 
+
+                        </li>
+
+            </ul>
+
+
+        </div>
+
+</div>
+
+<!-- 最新评论 -->
+<div id="sidebar_recentcomments" class="sidebar-block">
+    <div class="catListComment">
+<h3 class="catListTitle">最新评论</h3>
+
+	<div class="RecentCommentBlock">
+        <ul>
+                    <li class="recent_comment_title"><a href="https://www.cnblogs.com/zhenbianshu/p/6063340.html#4469100">1. Re:PHP中的回调函数和匿名函数</a></li>
+                    <li class="recent_comment_body">o(*^＠^*)o</li>
+                    <li class="recent_comment_author">--石海莹</li>
+                    <li class="recent_comment_title"><a href="https://www.cnblogs.com/zhenbianshu/p/7061550.html#4419941">2. Re:空间索引 - 四叉树</a></li>
+                    <li class="recent_comment_body">楼主，你好。能抽空把怎么释放内存的函数写一下吗？</li>
+                    <li class="recent_comment_author">--人生小觑</li>
+                    <li class="recent_comment_title"><a href="https://www.cnblogs.com/zhenbianshu/p/7978835.html#4403298">3. Re:多线程编程 - PHP 实现</a></li>
+                    <li class="recent_comment_body">讲解的非常清楚, 感谢啊!</li>
+                    <li class="recent_comment_author">--aubert</li>
+        </ul>
+    </div>
+</div>
+
+
+</div>
+
+
+
+<!-- 阅读排行榜 -->
+<div id="sidebar_topviewedposts" class="sidebar-block">
+    <div class="catListView">
+<h3 class="catListTitle">阅读排行榜</h3>
+	<div id="TopViewPostsBlock">
+        <ul style="word-break:break-all">
+                    <li>
+                        <a href="https://www.cnblogs.com/zhenbianshu/p/6111257.html">
+                            1. 网页实时聊天之PHP实现websocket(73133)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/zhenbianshu/p/7978835.html">
+                            2. 多线程编程 - PHP 实现(57286)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/zhenbianshu/p/5659328.html">
+                            3. PHP的openssl加密扩展使用小结(45699)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/zhenbianshu/p/5867440.html">
+                            4. shell实现SSH自动登陆(31487)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/zhenbianshu/p/5676822.html">
+                            5. 初探PHP多进程(22158)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/zhenbianshu/p/4964095.html">
+                            6. 网页实时聊天之js和jQuery实现ajax长轮询(22147)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/zhenbianshu/p/6063340.html">
+                            7. PHP中的回调函数和匿名函数(18445)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/zhenbianshu/p/7197349.html">
+                            8. 小时到分钟 - 一步步优化巨量关键词的匹配(16465)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/zhenbianshu/p/7061550.html">
+                            9. 空间索引 - 四叉树(12865)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/zhenbianshu/p/7795247.html">
+                            10. 使用PostgreSQL进行中文全文检索(12339)
+                        </a>
+                    </li>
+        </ul>
+    </div>
+</div>
+
+
+</div>
+
+<!-- 评论排行榜 -->
+
+
+<!-- 推荐排行榜 -->
+<div id="sidebar_topdiggedposts" class="sidebar-block">
+    
+<div id="topdigg_posts_wrap">
+    <div class="catListView">
+        <h3 class="catListTitle">推荐排行榜</h3>
+        <div id="TopDiggPostsBlock">
+            <ul style="word-break: break-all">
+                        <li>
+                            <a href="https://www.cnblogs.com/zhenbianshu/p/7197349.html">
+                                1. 小时到分钟 - 一步步优化巨量关键词的匹配(98)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/zhenbianshu/p/7152327.html">
+                                2. Linux - 请允许我静静地后台运行(26)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/zhenbianshu/p/7978835.html">
+                                3. 多线程编程 - PHP 实现(20)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/zhenbianshu/p/6111257.html">
+                                4. 网页实时聊天之PHP实现websocket(19)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/zhenbianshu/p/10305428.html">
+                                5. 一次 Java 内存泄漏的排查(14)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/zhenbianshu/p/4964095.html">
+                                6. 网页实时聊天之js和jQuery实现ajax长轮询(14)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/zhenbianshu/p/8510943.html">
+                                7. 从 PHP 到 Java(14)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/zhenbianshu/p/5867440.html">
+                                8. shell实现SSH自动登陆(12)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/zhenbianshu/p/5042303.html">
+                                9. linux的“自动化”(11)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/zhenbianshu/p/7905678.html">
+                                10. Gotorch - 多机定时任务管理系统(11)
+                            </a>
+                        </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</div></div>
+                    <script>loadBlogSideColumn();</script>
+			</div>
+			
+		</div><!--end: sideBarMain -->
+	</div><!--end: sideBar 侧边栏容器 -->
+	<div class="clear"></div>
+	</div><!--end: main -->
+	<div class="clear"></div>
+	<div id="footer">
+		<!--done-->
+Copyright © 2020 枕边书
+<br><span id="poweredby">Powered by .NET Core 3.1.1 on Linux</span>
+
+
+
+	</div><!--end: footer -->
+</div><!--end: home 自定义的最大容器 -->
+
+
+    
+
+<iframe id="google_osd_static_frame_9773438666917" name="google_osd_static_frame" style="display: none; width: 0px; height: 0px;" src="./网页实时聊天之PHP实现websocket - 枕边书 - 博客园_files/saved_resource(2).html"></iframe><script type="text/javascript">
+var wbshowIframe='<ifram';
+wbshowIframe += 'e width="100%" height="300" class="share_self"  f';
+wbshowIframe += 'rameborder="0" scrolling="no" s';
+
+wbshowIframe += 'rc="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=500&fansRow=2&ptype=1&speed=0&skin=1&isTitle=1&noborder=1&isWeibo=1&isFans=0&uid=5715965217&verifier=55940cc2&dpc=1"></ifr';
+wbshowIframe += 'ame>';
+document.getElementById('wbshow').innerHTML = wbshowIframe;
+</script><script type="text/javascript">getFollowStatus('1e697f43-716d-e511-9fc1-ac853d9f53cc');</script></body></html>
